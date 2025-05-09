@@ -6,6 +6,7 @@ include:
   - component: gitlab.com/PassiveLogic/ci/swift-api-check@4
   - component: gitlab.com/PassiveLogic/ci/swift-build@4
     inputs:
+      swift-image: registry.gitlab.com/passivelogic/compiler/swift
       runner-tags:
         - benchmarks.ubuntu.orin4
 
