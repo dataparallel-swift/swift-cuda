@@ -3,7 +3,19 @@
 import CUDA
 import Foundation
 
-func cuda_safe_call(file: StaticString = #file, line: UInt = #line, _ function: () -> CUresult) -> Void {
+struct V3<Element> {
+    var x: Element
+    var y: Element
+    var z: Element
+
+    init(_ x: Element, _ y: Element, _ z: Element) {
+        self.x = x
+        self.y = y
+        self.z = z
+    }
+}
+
+func cuda_safe_call(file: StaticString = #file, line: UInt = #line, _ function: () -> CUresult) {
     let result = function()
     guard CUDA_SUCCESS == result else {
         var name: UnsafePointer<CChar>?
@@ -11,6 +23,8 @@ func cuda_safe_call(file: StaticString = #file, line: UInt = #line, _ function: 
         cuGetErrorName(result, &name)
         cuGetErrorString(result, &desc)
         fatalError(
+            // This is a static C string, it is guaranteed to be non-null
+            // swiftlint:disable:next force_unwrapping
             "CUDA call failed with error \(String(cString: name!)) (\(result.rawValue)): \(String(cString: desc!))",
             file: file,
             line: line
@@ -66,6 +80,8 @@ else {
 
         let name = withUnsafeTemporaryAllocation(of: CChar.self, capacity: 128, { buffer in
             cuda_safe_call { cuDeviceGetName(buffer.baseAddress, 128, dev) }
+            // This is a static C string, it is guaranteed to be non-null
+            // swiftlint:disable:next force_unwrapping
             return String(cString: buffer.baseAddress!)
         })
 
@@ -76,7 +92,7 @@ else {
 
         var multiProcessorCount: Int32 = 0
         let coresPerMP =
-            if let r = gpuArchCoresPerSM[(major << 4) + minor] { r } else {
+            if let result = gpuArchCoresPerSM[(major << 4) + minor] { result } else {
                 fatalError("Number of cores for SM \(major).\(minor) is undefined")
             }
         cuda_safe_call { cuDeviceGetAttribute(&multiProcessorCount, CU_DEVICE_ATTRIBUTE_MULTIPROCESSOR_COUNT, dev) }
@@ -95,17 +111,17 @@ else {
         var warpSize: Int32 = 0
         var maxThreadsPerMultiprocessor: Int32 = 0
         var maxThreadsPerBlock: Int32 = 0
-        var maxBlockDim: (Int32, Int32, Int32) = (0, 0, 0)
-        var maxGridDim: (Int32, Int32, Int32) = (0, 0, 0)
+        var maxBlockDim: V3<Int32> = V3(0, 0, 0)
+        var maxGridDim: V3<Int32> = V3(0, 0, 0)
         cuda_safe_call { cuDeviceGetAttribute(&warpSize, CU_DEVICE_ATTRIBUTE_WARP_SIZE, dev) }
         cuda_safe_call { cuDeviceGetAttribute(&maxThreadsPerMultiprocessor, CU_DEVICE_ATTRIBUTE_MAX_THREADS_PER_MULTIPROCESSOR, dev) }
         cuda_safe_call { cuDeviceGetAttribute(&maxThreadsPerBlock, CU_DEVICE_ATTRIBUTE_MAX_THREADS_PER_BLOCK, dev) }
-        cuda_safe_call { cuDeviceGetAttribute(&maxBlockDim.0, CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_X, dev) }
-        cuda_safe_call { cuDeviceGetAttribute(&maxBlockDim.1, CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_Y, dev) }
-        cuda_safe_call { cuDeviceGetAttribute(&maxBlockDim.2, CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_Z, dev) }
-        cuda_safe_call { cuDeviceGetAttribute(&maxGridDim.0, CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_X, dev) }
-        cuda_safe_call { cuDeviceGetAttribute(&maxGridDim.1, CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_Y, dev) }
-        cuda_safe_call { cuDeviceGetAttribute(&maxGridDim.2, CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_Z, dev) }
+        cuda_safe_call { cuDeviceGetAttribute(&maxBlockDim.x, CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_X, dev) }
+        cuda_safe_call { cuDeviceGetAttribute(&maxBlockDim.y, CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_Y, dev) }
+        cuda_safe_call { cuDeviceGetAttribute(&maxBlockDim.z, CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_Z, dev) }
+        cuda_safe_call { cuDeviceGetAttribute(&maxGridDim.x, CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_X, dev) }
+        cuda_safe_call { cuDeviceGetAttribute(&maxGridDim.y, CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_Y, dev) }
+        cuda_safe_call { cuDeviceGetAttribute(&maxGridDim.z, CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_Z, dev) }
 
         var gpuClock: Int32 = 0
         var memoryClock: Int32 = 0
