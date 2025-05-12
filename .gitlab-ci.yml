@@ -8,5 +8,5 @@ include:
     inputs:
       swift-image: registry.gitlab.com/passivelogic/compiler/swift
       runner-tags:
-        - benchmarks.ubuntu.orin4
+        - passivelogic-linux-small-arm64
 
