@@ -4,6 +4,8 @@ include:
   - component: gitlab.com/PassiveLogic/ci/swiftformat@4
   - component: gitlab.com/PassiveLogic/ci/swift-import-analyzer@4
   - component: gitlab.com/PassiveLogic/ci/swift-api-check@4
+    inputs:
+      swift-image: registry.gitlab.com/passivelogic/compiler/swift
   - component: gitlab.com/PassiveLogic/ci/swift-build@4
     inputs:
       swift-image: registry.gitlab.com/passivelogic/compiler/swift
