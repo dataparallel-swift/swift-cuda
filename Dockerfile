@@ -1,4 +1,4 @@
-FROM registry.gitlab.com/passivelogic/compiler/swift as builder
+FROM registry.gitlab.com/passivelogic/compiler/swift AS builder
 
 WORKDIR /workdir
 COPY . .
