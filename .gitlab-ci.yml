@@ -17,4 +17,12 @@ include:
         - when: always
       additional-teardown:
         - swift run nvidia-device-query
+  - component: gitlab.com/PassiveLogic/ci/container-image-build@4
+    inputs:
+      platform: linux/arm64
+      runner-tags: ["passivelogic-linux-small-arm64"]
+  - component: gitlab.com/PassiveLogic/ci/container-image-vend@4
+    inputs:
+      build-jobs:
+        - container-image-build linux/arm64
 
