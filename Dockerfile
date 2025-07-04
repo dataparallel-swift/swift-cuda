@@ -7,6 +7,5 @@ RUN swift build -c release
 
 FROM registry.gitlab.com/passivelogic/compiler/swift:slim
 
-WORKDIR /workdir
 COPY --from=builder /workdir/.build/release/nvidia-device-query /usr/local/bin
 
