@@ -18,7 +18,7 @@ let package = Package(
         // Targets can depend on other targets in this package and products from dependencies.
         .systemLibrary(
             name: "CUDA",
-            pkgConfig: "cuda-12.2"
+            pkgConfig: "cuda-12.6"
         ),
         .executableTarget(
             name: "nvidia-device-query",
