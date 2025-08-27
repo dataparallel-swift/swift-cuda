@@ -1,0 +1,4 @@
+module CUDART [system] {
+  header "cuda_runtime.h"
+  export *
+}
