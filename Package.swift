@@ -12,6 +12,7 @@ let package = Package(
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(name: "CUDA", type: libraryType, targets: ["CUDA"]),
         .library(name: "CUDART", type: libraryType, targets: ["CUDART"]),
+        .library(name: "CUPTI", type: libraryType, targets: ["CUPTI"]),
         .executable(name: "nvidia-device-query", targets: ["nvidia-device-query"]),
     ],
     targets: [
@@ -24,6 +25,14 @@ let package = Package(
         .systemLibrary(
             name: "CUDART",
             pkgConfig: "cudart-12.6"
+        ),
+        .target(
+            name: "CUPTI",
+            dependencies: ["CUDA"],
+            publicHeadersPath: ".",
+            linkerSettings: [
+                .linkedLibrary("cupti"),
+            ],
         ),
         .executableTarget(
             name: "nvidia-device-query",

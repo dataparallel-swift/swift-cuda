@@ -1,0 +1,5 @@
+module CUPTI {
+  header "cupti.h"
+  export *
+}
+
