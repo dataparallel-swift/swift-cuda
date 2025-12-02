@@ -1,11 +1,10 @@
-FROM registry.gitlab.com/passivelogic/compiler/swift:6.1 AS builder
+FROM ghcr.io/dataparallel-swift/swift:6.2 AS builder
 
 WORKDIR /workdir
 COPY . .
 RUN swift build -c release
 
 
-FROM registry.gitlab.com/passivelogic/compiler/swift:6.1-slim
+FROM ghcr.io/dataparallel-swift/swift:6.2-slim
 
 COPY --from=builder /workdir/.build/release/nvidia-device-query /usr/local/bin
-
