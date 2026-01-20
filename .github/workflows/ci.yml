@@ -1,0 +1,32 @@
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  lint:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v6
+      - name: SwiftFormat
+        run: swiftformat --lint --strict . --reporter github-actions-log
+
+  build:
+    runs-on: [self-hosted, linux, nvidia, gpu]
+    container: ghcr.io/dataparallel-swift/swift:6.1
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/cache@v5
+        with:
+          path: .build
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+
+      - name: Build
+        run: swift build
+
+      - name: Test
+        run: swift run nvidia-device-query
