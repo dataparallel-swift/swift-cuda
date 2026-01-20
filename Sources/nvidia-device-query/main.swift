@@ -1,4 +1,4 @@
-// Copyright (c) 2025 The swift-cuda authors. All rights reserved.
+// Copyright (c) 2026 The swift-cuda authors. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -183,7 +183,7 @@ else {
         print("Device \(devid): \(name)")
         print("  CUDA capability:                               \(major).\(minor)")
         print("  CUDA cores:                                    \(coresPerMP * multiProcessorCount) cores in \(multiProcessorCount) multiprocessors (\(coresPerMP) cores/MP)")
-        print("  Global memory:                                 \(totalGlobalMem / 1048576) MB")
+        print("  Global memory:                                 \(totalGlobalMem / 1_048_576) MB")
         print("  Constant memory:                               \(totalConstantMem / 1024) kB")
         print("  Shared memory per block:                       \(sharedMemoryPerBlock / 1024) kB")
         print("  L2 cache per block:                            \(l2CacheSize / 1024) kB")

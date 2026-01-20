@@ -32,7 +32,7 @@ let package = Package(
             publicHeadersPath: ".",
             linkerSettings: [
                 .linkedLibrary("cupti"),
-            ],
+            ]
         ),
         .executableTarget(
             name: "nvidia-device-query",
